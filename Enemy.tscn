@@ -1,0 +1,67 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Enemy.gd" type="Script" id=1]
+[ext_resource path="res://assets/art/PNG/Default/enemy_A.png" type="Texture" id=2]
+[ext_resource path="res://HealthDisplay.tscn" type="PackedScene" id=3]
+[ext_resource path="res://assets/art/PNG/Default/star_tiny.png" type="Texture" id=4]
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 25.9925
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 600.0
+
+[sub_resource type="ParticlesMaterial" id=3]
+lifetime_randomness = 0.54
+trail_divisor = 3
+emission_shape = 1
+emission_sphere_radius = 2.0
+flag_disable_z = true
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 100.0
+initial_velocity_random = 0.5
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+linear_accel = 100.0
+linear_accel_random = 0.2
+
+[node name="Enemy" type="KinematicBody2D" groups=[
+"minimap_objects",
+"mobs",
+]]
+script = ExtResource( 1 )
+run_speed = 250
+
+[node name="HealthDisplay" parent="." instance=ExtResource( 3 )]
+modulate = Color( 1, 1, 1, 0.196078 )
+scale = Vector2( 0.45, 0.5 )
+z_index = 1
+
+[node name="Sprite" type="Sprite" parent="."]
+rotation = 1.5708
+texture = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( -5, 0 )
+shape = SubResource( 1 )
+
+[node name="DetectRadius" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectRadius"]
+shape = SubResource( 2 )
+
+[node name="Particles2D" type="Particles2D" parent="."]
+modulate = Color( 0.901961, 0.219608, 0.219608, 0.419608 )
+z_index = -1
+emitting = false
+amount = 200
+lifetime = 0.8
+one_shot = true
+explosiveness = 0.5
+randomness = 0.29
+process_material = SubResource( 3 )
+texture = ExtResource( 4 )
+
+[connection signal="body_entered" from="DetectRadius" to="." method="_on_DetectRadius_body_entered"]
+[connection signal="body_exited" from="DetectRadius" to="." method="_on_DetectRadius_body_exited"]
